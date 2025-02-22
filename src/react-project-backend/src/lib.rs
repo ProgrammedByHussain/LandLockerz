@@ -15,7 +15,6 @@ struct NFTMetadata {
     category: String,
     location: String,
     contact_info: String,
-    // additional_details: String,
     file_name: String,
     file_size: u64,
     upload_timestamp: String,
