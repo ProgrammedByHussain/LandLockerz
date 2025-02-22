@@ -31,6 +31,7 @@ import {
   Check as CheckIcon,
 } from "@mui/icons-material";
 
+
 const PDFUploader = () => {
   const [activeStep, setActiveStep] = useState(-1);
   const { walletAddress } = useUser();
@@ -46,6 +47,7 @@ const PDFUploader = () => {
     location: "",
     contactInfo: "",
   });
+  const reader = new FileReader();
 
   const steps = [
     "Upload Document",
@@ -84,7 +86,6 @@ const PDFUploader = () => {
       setError("Please upload a PDF document");
       return;
     }
-    console.log("TESTSETSEssssT");
     try {
         setLoading(true);
         setError("");
@@ -112,7 +113,7 @@ const PDFUploader = () => {
   
         // Call the mint_nft function
         const nftId = await react_project_backend.mint_nft(request);
-        setMintingStatus(`Successfully created NFT with ID: ${nftId.toString()}`);
+        setMintingStatus(`Loaded NFT!`);
   
         // Reset form
         setFormData({
@@ -461,7 +462,9 @@ const PDFUploader = () => {
                 onClick={handleNext}
                 endIcon={<NavigateNextIcon />}
               >
-                Next
+                
+                {activeStep == 2 ? "Confirm" : "Next" }
+                {/* Next */}
               </Button>
             )}
           </Box>
