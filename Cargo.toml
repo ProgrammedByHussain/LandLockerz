@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "src/react-project-backend"
+]
+resolver = "2"
