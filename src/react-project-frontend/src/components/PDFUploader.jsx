@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Principal } from "@dfinity/principal";
+import { useUser } from '../providers/user';
 import { react_project_backend } from "../../../declarations/react-project-backend";
 import {
   Box,
@@ -20,6 +21,8 @@ const PDFUploader = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { walletAddress } = useUser();
+  console.log(walletAddress)
   const [mintingStatus, setMintingStatus] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -28,7 +31,7 @@ const PDFUploader = () => {
     category: "",
     location: "",
     contactInfo: "",
-    additionalDetails: "",
+    additional_details: "", // Renamed to match Rust backend
   });
 
   const handleInputChange = (e) => {
@@ -67,18 +70,28 @@ const PDFUploader = () => {
       setError("");
       setMintingStatus("Creating NFT...");
 
+      // Prepare metadata
       const metadata = {
-        ...formData,
+        title: formData.title,
+        description: formData.description,
+        price: formData.price,
+        category: formData.category,
+        location: formData.location,
+        contact_info: formData.contactInfo,
+        additional_details: formData.additional_details, // Ensure this matches Rust
         file_name: file.name,
-        file_size: BigInt(file.size),
+        file_size: file.size,
         upload_timestamp: new Date().toISOString(),
       };
+    //   console.log(walletAddress)
 
+      // Prepare the mint request
       const request = {
-        owner: Principal.fromText("2vxsx-fae").toString(),
+        owner: walletAddress, // Use the logged-in user's Principal
         metadata: metadata,
       };
 
+      // Call the mint_nft function
       const nftId = await react_project_backend.mint_nft(request);
       setMintingStatus(`Successfully created NFT with ID: ${nftId.toString()}`);
 
@@ -90,7 +103,7 @@ const PDFUploader = () => {
         category: "",
         location: "",
         contactInfo: "",
-        additionalDetails: "",
+        additional_details: "", // Reset to match Rust backend
       });
       setFile(null);
     } catch (err) {
@@ -231,8 +244,8 @@ const PDFUploader = () => {
             <TextField
               fullWidth
               label="Additional Details"
-              name="additionalDetails"
-              value={formData.additionalDetails}
+              name="additional_details" // Renamed to match Rust backend
+              value={formData.additional_details}
               onChange={handleInputChange}
               multiline
               rows={3}

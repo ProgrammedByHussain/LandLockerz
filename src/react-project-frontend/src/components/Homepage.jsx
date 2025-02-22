@@ -4,7 +4,6 @@ import { useUser } from '../providers/user';
 
 const HomePage = () => {
   const { walletAddress } = useUser();
-
   return (
     <Box sx={{ padding: 4, textAlign: 'center' }}>
       <Typography variant="h5" component="p">

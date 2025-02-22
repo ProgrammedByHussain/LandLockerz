@@ -1,18 +1,28 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 // Step 1: Create a Context
 const UserContext = createContext();
 
 // Step 2: Create a Provider Component
 export const UserProvider = ({ children }) => {
-  const [walletAddress, setWalletAddress] = useState('');
+  // Load initial state from localStorage
+  const [walletAddress, setWalletAddress] = useState(() => {
+    return localStorage.getItem('walletAddress') || '';
+  });
 
   // Function to update the wallet address
   const updateWalletAddress = (address) => {
     setWalletAddress(address);
+    localStorage.setItem('walletAddress', address); // Persist state
   };
 
-  // Value object to be passed to the context
+  useEffect(() => {
+    const storedAddress = localStorage.getItem('walletAddress');
+    if (storedAddress) {
+      setWalletAddress(storedAddress);
+    }
+  }, []);
+
   const value = {
     walletAddress,
     updateWalletAddress,
