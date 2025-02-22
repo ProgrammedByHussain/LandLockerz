@@ -9,7 +9,7 @@ export const AppBarProvider = ({ children }) => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
 
   const connectWallet = () => {
-    console.log("TESTSETS"); 
+    // console.log("TESTSETS"); 
     setIsWalletConnected(true);
   };
 

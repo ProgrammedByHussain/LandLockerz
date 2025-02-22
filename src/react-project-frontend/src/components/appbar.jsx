@@ -71,7 +71,7 @@ const AppBarComponent = () => {
               backgroundColor: "#ff9800",
             },
           }}
-          onClick={() => navigate("/transfers")}
+          onClick={() => navigate("/search")}
         >
           Search
         </Button>

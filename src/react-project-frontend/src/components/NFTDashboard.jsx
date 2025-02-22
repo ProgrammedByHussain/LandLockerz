@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { react_project_backend } from "../../../declarations/react-project-backend";
-import { useUser } from "../providers/user";
+// import { useUser } from "../providers/user";
 import { Grid, Card, CardContent, Typography, Divider, Box, Button, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, TextField } from "@mui/material";
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
 import CloseIcon from "@mui/icons-material/Close";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"; // PDF Icon
 
-const NFTDashboard = () => {
-  const { walletAddress } = useUser();
+const NFTDashboard = ({isSearch, walletAddress}) => {
+//   const { walletAddress } = useUser();
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -154,17 +154,19 @@ const NFTDashboard = () => {
                         <Typography variant="body2">{nft.metadata.location}</Typography>
                       </Grid>
                     </Grid>
-
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      sx={{ mt: 2 }}
-                      startIcon={<TransferWithinAStationIcon />}
-                      color="warning" // Orange Transfer Button
-                      onClick={() => handleOpenTransferDialog(nft)}
-                    >
-                      Transfer NFT
-                    </Button>
+                        {!isSearch && 
+                                       <Button
+                                       variant="contained"
+                                       fullWidth
+                                       sx={{ mt: 2 }}
+                                       startIcon={<TransferWithinAStationIcon />}
+                                       color="warning" // Orange Transfer Button
+                                       onClick={() => handleOpenTransferDialog(nft)}
+                                     >
+                                       Transfer NFT
+                                     </Button>
+                        }
+     
                   </CardContent>
                 </Card>
               </Grid>

@@ -43,7 +43,7 @@ const HomePage = () => {
 
         {/* Right Section: NFT Dashboard */}
         <Grid item xs={12} sm={6}>
-          <NFTDashboard />
+          <NFTDashboard isSearch={false}  walletAddress={walletAddress} />
         </Grid>
       </Grid>
 

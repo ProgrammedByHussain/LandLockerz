@@ -7,6 +7,7 @@ import ValidateProperty from "./components/validateProperty";
 import Transfers from "./pages/transfers";
 import { AppBarProvider } from "./providers/navbar";
 import AppBarComponent from "./components/appbar";
+import SearchWallet from "./pages/search";
 import { RefreshProvider } from "./providers/refresh";
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
             <Route path="/" element={<LoginComponent />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/validate" element={<ValidateProperty />} />
-            <Route path="/transfers" element={<Transfers />} />
+            <Route path="/search" element={<SearchWallet />} />
           </Routes>
       </RefreshProvider>
 
