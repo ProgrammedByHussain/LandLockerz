@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Grid, Divider, Fade, Tooltip, IconButton } from '@mui/material';
 import { useUser } from '../providers/user';
 import NFTDashboard from './NFTDashboard';
