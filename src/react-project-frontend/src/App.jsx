@@ -1,30 +1,21 @@
-import { useState } from 'react';
-import { react_project_backend } from 'declarations/react-project-backend';
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { UserProvider } from './providers/user';
+import LoginComponent from './components/LoginComponent';
+import HomePage from './components/HomePage'; // Create this component
+import ValidateProperty from './components/validateProperty';
 function App() {
-  const [greeting, setGreeting] = useState('');
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    react_project_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <UserProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginComponent />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/validate" element={<ValidateProperty />} />
+
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }
 
