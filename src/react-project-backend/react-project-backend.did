@@ -1,3 +1,11 @@
+type NFT = record {
+    id: nat64;
+    owner: text;
+    metadata: text;
+};
+
 service : {
-    "greet": (text) -> (text) query;
-}
+    "get_nft": (nat64) -> (opt NFT) query;
+    "mint_nft": (text, text) -> (nat64);
+    "transfer_nft": (nat64, text) -> (bool);
+};
