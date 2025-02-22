@@ -30,7 +30,7 @@ function ValidateProperty() {
         <RefreshProvider>
       <CssBaseline />
       <Box sx={{ flexGrow: 1, minHeight: "100vh" }}>
-        <AppBar position="static">
+        {/* <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               NFT Land Registry
@@ -42,7 +42,7 @@ function ValidateProperty() {
               Connect Wallet
             </Button>
           </Toolbar>
-        </AppBar>
+        </AppBar> */}
 
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Box sx={{ mb: 4 }}>

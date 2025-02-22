@@ -3,8 +3,10 @@ import { useUser } from '../providers/user';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container, Paper } from '@mui/material';
 import { AuthClient } from '@dfinity/auth-client';
+import { useAppBar } from '../providers/navbar';
 
 const LoginComponent = () => {
+  const { connectWallet } = useAppBar(); 
   const { updateWalletAddress } = useUser();
   const navigate = useNavigate();
   const [authClient, setAuthClient] = useState(null);
@@ -15,6 +17,7 @@ const LoginComponent = () => {
       const client = await AuthClient.create();
       setAuthClient(client);
       setIAuthenticated(await client.isAuthenticated());
+      connectWallet(); 
     };
     createAuthClient();
   }, []);
