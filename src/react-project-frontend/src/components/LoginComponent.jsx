@@ -1,48 +1,76 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../providers/user';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { Box, Typography, TextField, Button, Container, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button, Container, Paper } from '@mui/material';
+import { AuthClient } from '@dfinity/auth-client';
 
 const LoginComponent = () => {
-  const [inputAddress, setInputAddress] = useState('');
   const { updateWalletAddress } = useUser();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const [authClient, setAuthClient] = useState(null);
+  const [isAuthenticated, setIAuthenticated] = useState(false);
+  const ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai'
+  useEffect(() => {
+    const createAuthClient = async () => {
+      const client = await AuthClient.create();
+      setAuthClient(client);
+      setIAuthenticated(await client.isAuthenticated());
+    };
+    createAuthClient();
+  }, []);
 
-  const handleInputChange = (event) => {
-    setInputAddress(event.target.value);
+  const handleLogin = async () => {
+    if (authClient) {
+      await authClient.login({
+        identityProvider: `https://identity.ic0.app/?canisterId=${ID}`,
+        onSuccess: () => {
+        setIAuthenticated(true);
+          updateWalletAddress(authClient.getIdentity().getPrincipal().toString());
+          navigate('/home');
+        },
+        onError: (error) => {
+          console.error('Login error:', error);
+        }
+      });
+    }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    updateWalletAddress(inputAddress); // Update the wallet address in context
-    navigate('/home'); // Redirect to the home page
+  const handleLogout = async () => {
+    if (authClient) {
+      await authClient.logout();
+      setIAuthenticated(false);
+      updateWalletAddress(null);
+    }
   };
 
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 8, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Enter Your Wallet to Continue
+          Login with Internet Identity
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField
-            fullWidth
-            label="Wallet Address"
-            variant="outlined"
-            placeholder="Enter your wallet address"
-            value={inputAddress}
-            onChange={handleInputChange}
-            sx={{ mb: 3 }}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-          >
-            Continue
-          </Button>
+        <Box sx={{ mt: 3 }}>
+          {isAuthenticated ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              fullWidth
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              onClick={handleLogin}
+            >
+              Login
+            </Button>
+          )}
         </Box>
       </Paper>
     </Container>
