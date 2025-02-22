@@ -27,10 +27,10 @@ const theme = createTheme({
 function ValidateProperty() {
   return (
     <ThemeProvider theme={theme}>
-        <RefreshProvider>
-      <CssBaseline />
-      <Box sx={{ flexGrow: 1, minHeight: "100vh" }}>
-        {/* <AppBar position="static">
+      <RefreshProvider>
+        <CssBaseline />
+        <Box sx={{ flexGrow: 1, minHeight: "100vh" }}>
+          {/* <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               NFT Land Registry
@@ -44,22 +44,12 @@ function ValidateProperty() {
           </Toolbar>
         </AppBar> */}
 
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-              Create New Land NFT
-            </Typography>
-            <PDFUploader />
-          </Box>
-
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-              Your Land Registry
-            </Typography>
-            <NFTDashboard />
-          </Box>
-        </Container>
-      </Box>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Box sx={{ mb: 4 }}>
+              <PDFUploader />
+            </Box>
+          </Container>
+        </Box>
       </RefreshProvider>
     </ThemeProvider>
   );
