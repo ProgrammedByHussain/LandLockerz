@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { react_project_backend } from "../../../declarations/react-project-backend";
+import { useUser } from "../providers/user";
+import { useRefresh } from "../providers/refresh";
 import {
   Box,
   Card,
@@ -23,6 +25,8 @@ import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStati
 import CloseIcon from "@mui/icons-material/Close";
 
 const NFTDashboard = () => {
+  const { triggerRefresh, refresh } = useRefresh();
+
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -30,11 +34,13 @@ const NFTDashboard = () => {
   const [transferAddress, setTransferAddress] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
-
+  const { walletAddress } = useUser();
+  //   console.log(walletAddress)
   const fetchNFTs = async () => {
     try {
       setLoading(true);
-      const userNFTs = await react_project_backend.get_user_nfts("2vxsx-fae");
+      // console.log(walletAddress)
+      const userNFTs = await react_project_backend.get_user_nfts(walletAddress);
       setNfts(userNFTs);
     } catch (err) {
       setError("Failed to fetch NFTs: " + err.message);
@@ -81,7 +87,7 @@ const NFTDashboard = () => {
 
   useEffect(() => {
     fetchNFTs();
-  }, []);
+  }, [refresh]);
 
   const handleOpenTransferDialog = (nft) => {
     setSelectedNFT(nft);
@@ -214,6 +220,17 @@ const NFTDashboard = () => {
                       {nft.metadata.contact_info}
                     </Typography>
                   </Box>
+
+                  {nft.metadata.additional_details && (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="subtitle2" color="textSecondary">
+                        Additional Details
+                      </Typography>
+                      <Typography variant="body2">
+                        {nft.metadata.additional_details}
+                      </Typography>
+                    </Box>
+                  )}
 
                   <Divider sx={{ my: 2 }} />
 

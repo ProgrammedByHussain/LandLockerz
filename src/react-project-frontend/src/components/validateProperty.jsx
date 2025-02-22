@@ -1,5 +1,6 @@
-import React from "react";
+// import { createContext, useContext, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+
 import {
   CssBaseline,
   AppBar,
@@ -11,7 +12,7 @@ import {
 } from "@mui/material";
 import PDFUploader from "./PDFUploader";
 import NFTDashboard from "./NFTDashboard";
-
+import { RefreshProvider } from "../providers/refresh";
 const theme = createTheme({
   palette: {
     primary: {
@@ -26,6 +27,7 @@ const theme = createTheme({
 function ValidateProperty() {
   return (
     <ThemeProvider theme={theme}>
+        <RefreshProvider>
       <CssBaseline />
       <Box sx={{ flexGrow: 1, minHeight: "100vh" }}>
         <AppBar position="static">
@@ -58,6 +60,7 @@ function ValidateProperty() {
           </Box>
         </Container>
       </Box>
+      </RefreshProvider>
     </ThemeProvider>
   );
 }
