@@ -1,11 +1,32 @@
+type NFTMetadata = record {
+    title: text;
+    description: text;
+    price: text;
+    category: text;
+    location: text;
+    contact_info: text;
+    additional_details: text;
+    file_name: text;
+    file_size: nat64;
+    upload_timestamp: text;
+};
+
 type NFT = record {
     id: nat64;
     owner: text;
-    metadata: text;
+    metadata: NFTMetadata;
+    created_at: nat64;
+};
+
+type MintRequest = record {
+    owner: text;
+    metadata: NFTMetadata;
 };
 
 service : {
-    "get_nft": (nat64) -> (opt NFT) query;
-    "mint_nft": (text, text) -> (nat64);
-    "transfer_nft": (nat64, text) -> (bool);
+    get_nft: (nat64) -> (opt NFT) query;
+    get_user_nfts: (text) -> (vec NFT) query;
+    search_nfts: (text) -> (vec NFT) query;
+    mint_nft: (MintRequest) -> (nat64);
+    transfer_nft: (nat64, text) -> (bool);
 };
