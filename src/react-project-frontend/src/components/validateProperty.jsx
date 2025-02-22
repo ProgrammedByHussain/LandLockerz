@@ -33,7 +33,9 @@ function ValidateProperty() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               NFT Land Registry
             </Typography>
-            <Button color="inherit">About</Button>
+            <Button color="inherit" onClick={() => navigate("/transfers")}>
+              Transfer NFTs
+            </Button>
             <Button color="inherit" variant="outlined" sx={{ ml: 2 }}>
               Connect Wallet
             </Button>
