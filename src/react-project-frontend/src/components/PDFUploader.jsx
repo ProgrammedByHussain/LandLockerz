@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Principal } from "@dfinity/principal";
+import React, { useState, useContext } from "react";
+// import { Principal } from "@dfinity/principal";
+import { useRefresh } from "../providers/refresh";
 import { useUser } from '../providers/user';
 import { react_project_backend } from "../../../declarations/react-project-backend";
 import {
@@ -18,11 +19,13 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const PDFUploader = () => {
+
+  const { triggerRefresh, refresh } = useRefresh();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { walletAddress } = useUser();
-  console.log(walletAddress)
+//   console.log(walletAddress)
   const [mintingStatus, setMintingStatus] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -106,11 +109,15 @@ const PDFUploader = () => {
         additional_details: "", // Reset to match Rust backend
       });
       setFile(null);
+      console.log(refresh);
+
+      triggerRefresh(); 
+
     } catch (err) {
       setError("Failed to create NFT: " + err.message);
     } finally {
       setLoading(false);
-    }
+    } 
   };
 
   return (

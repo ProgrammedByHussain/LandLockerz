@@ -1,5 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { react_project_backend } from "../../../declarations/react-project-backend";
+import { useUser } from '../providers/user';
+import { useRefresh } from "../providers/refresh";
 import {
     Box,
     Card,
@@ -23,6 +25,8 @@ import {
   import CloseIcon from "@mui/icons-material/Close";
   
   const NFTDashboard = () => {
+    const { triggerRefresh, refresh } = useRefresh();
+
     const [nfts, setNfts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -30,11 +34,13 @@ import {
     const [transferAddress, setTransferAddress] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [transferDialogOpen, setTransferDialogOpen] = useState(false);
-  
+    const { walletAddress } = useUser();
+//   console.log(walletAddress)
     const fetchNFTs = async () => {
       try {
         setLoading(true);
-        const userNFTs = await react_project_backend.get_user_nfts("2vxsx-fae");
+        // console.log(walletAddress)
+        const userNFTs = await react_project_backend.get_user_nfts(walletAddress);
         setNfts(userNFTs);
       } catch (err) {
         setError("Failed to fetch NFTs: " + err.message);
@@ -81,7 +87,7 @@ import {
   
     useEffect(() => {
       fetchNFTs();
-    }, []);
+    }, [refresh]);
   
     const handleOpenTransferDialog = (nft) => {
       setSelectedNFT(nft);
