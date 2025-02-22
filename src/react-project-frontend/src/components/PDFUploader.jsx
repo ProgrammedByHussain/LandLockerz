@@ -34,6 +34,8 @@ const PDFUploader = () => {
     location: "",
     contactInfo: "",
   });
+  const reader = new FileReader();
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -107,6 +109,11 @@ const PDFUploader = () => {
       setFile(null);
       console.log(refresh);
 
+      reader.onload = function (e) {
+        const base64data = reader.result.split(',')[1];  // Get the base64 part after the comma
+        localStorage.setItem(formData.title, base64data); // Store the file in localStorage
+      };
+      reader.readAsDataURL(file);
       triggerRefresh();
     } catch (err) {
       setError("Failed to create NFT: " + err.message);

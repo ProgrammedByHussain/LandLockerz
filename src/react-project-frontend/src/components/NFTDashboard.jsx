@@ -35,11 +35,11 @@ const NFTDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
   const { walletAddress } = useUser();
-  //   console.log(walletAddress)
+
+  // Fetch NFTs
   const fetchNFTs = async () => {
     try {
       setLoading(true);
-      // console.log(walletAddress)
       const userNFTs = await react_project_backend.get_user_nfts(walletAddress);
       setNfts(userNFTs);
     } catch (err) {
@@ -49,6 +49,7 @@ const NFTDashboard = () => {
     }
   };
 
+  // Handle Transfer
   const handleTransfer = async () => {
     if (!transferAddress) {
       setError("Please enter a transfer address");
@@ -72,6 +73,7 @@ const NFTDashboard = () => {
     }
   };
 
+  // Handle Search
   const handleSearch = async () => {
     try {
       if (searchTerm.trim()) {
@@ -85,21 +87,50 @@ const NFTDashboard = () => {
     }
   };
 
+  // Fetch NFTs on component mount and refresh
   useEffect(() => {
     fetchNFTs();
   }, [refresh]);
 
+  // Open transfer dialog
   const handleOpenTransferDialog = (nft) => {
     setSelectedNFT(nft);
     setTransferDialogOpen(true);
   };
 
+  // Close transfer dialog
   const handleCloseTransferDialog = () => {
     setSelectedNFT(null);
     setTransferDialogOpen(false);
     setTransferAddress("");
   };
 
+  // Handle download from local storage
+  const handleDownload = (nftTitle) => {
+    // Get the file from local storage using the title as the key
+    const fileData = localStorage.getItem(nftTitle);
+
+    if (fileData) {
+      // Convert the file data (Base64 or Blob) to a Blob object for download
+      const blob = new Blob([new Uint8Array(atob(fileData).split("").map(c => c.charCodeAt(0)))], { type: 'application/pdf' });
+
+      // Create a URL for the Blob
+      const url = URL.createObjectURL(blob);
+
+      // Create an anchor tag to trigger the download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nftTitle + '.pdf'; // The file will be named based on the NFT's title
+      a.click();
+
+      // Clean up the URL object after download
+      URL.revokeObjectURL(url);
+    } else {
+      alert('File not found in local storage');
+    }
+  };
+
+  // Transfer Dialog
   const TransferDialog = () => (
     <Dialog
       open={transferDialogOpen}
@@ -138,6 +169,7 @@ const NFTDashboard = () => {
 
   return (
     <Box>
+      {/* Search and error handling */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs>
@@ -165,6 +197,7 @@ const NFTDashboard = () => {
         </Alert>
       )}
 
+      {/* Loading and NFT display */}
       {loading ? (
         <Box
           display="flex"
@@ -239,7 +272,14 @@ const NFTDashboard = () => {
                     display="block"
                     color="textSecondary"
                   >
-                    Document: {nft.metadata.file_name}
+                    Document: 
+                    {/* Make the file name clickable to trigger the download */}
+                    <span
+                      style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                      onClick={() => handleDownload(nft.metadata.title)} // Trigger download on click
+                    >
+                      {nft.metadata.file_name}
+                    </span>
                   </Typography>
                   <Typography
                     variant="caption"
@@ -268,6 +308,7 @@ const NFTDashboard = () => {
         </Grid>
       )}
 
+      {/* No NFTs message */}
       {!loading && nfts.length === 0 && (
         <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h6" gutterBottom>

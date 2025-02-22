@@ -5,7 +5,6 @@ type NFTMetadata = record {
     category: text;
     location: text;
     contact_info: text;
-    additional_details: text;
     file_name: text;
     file_size: nat64;
     upload_timestamp: text;
