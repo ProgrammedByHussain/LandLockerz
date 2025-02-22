@@ -18,21 +18,19 @@ const AppBarComponent = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          LandLockerz
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={() => navigate('/Home')}>
+        LandLocks
         </Typography>
         <Button color="inherit" onClick={() => navigate('/transfers')}>
-          Search By ID
+          Search 
         </Button>
         <Button color="inherit" onClick={() => navigate('/transfers')}>
-          Transfer NFTs
+          Transfer
         </Button>
         <Button color="inherit" onClick={() => navigate('/validate')}>
-          Lockup A property  
+            Create
         </Button>
-        <Button color="inherit" onClick={() => navigate('/Home')}>
-          Home
-        </Button>
+ 
         
         <Button
           color="inherit"

@@ -7,12 +7,14 @@ import ValidateProperty from "./components/validateProperty";
 import Transfers from "./pages/transfers";
 import { AppBarProvider } from "./providers/navbar";
 import AppBarComponent from "./components/appbar";
-
+import { RefreshProvider } from "./providers/refresh";
 function App() {
   return (
     <Router>
       <UserProvider>
         <AppBarProvider>
+        <RefreshProvider>
+
           <AppBarWithLocation />
           <Routes>
             <Route path="/" element={<LoginComponent />} />
@@ -20,6 +22,8 @@ function App() {
             <Route path="/validate" element={<ValidateProperty />} />
             <Route path="/transfers" element={<Transfers />} />
           </Routes>
+      </RefreshProvider>
+
         </AppBarProvider>
       </UserProvider>
     </Router>
