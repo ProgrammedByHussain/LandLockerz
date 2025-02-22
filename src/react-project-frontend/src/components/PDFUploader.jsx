@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import {
+import { useUser } from "../providers/user";
+import { react_project_backend } from "../../../declarations/react-project-backend";
+import 
+{
   Box,
   Button,
   TextField,
@@ -29,7 +32,8 @@ import {
 } from "@mui/icons-material";
 
 const PDFUploader = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(-1);
+  const { walletAddress } = useUser();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -80,16 +84,62 @@ const PDFUploader = () => {
       setError("Please upload a PDF document");
       return;
     }
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setMintingStatus("Loaded NFT!");
-    }, 2000);
-  };
+    console.log("TESTSETSEssssT");
+    try {
+        setLoading(true);
+        setError("");
+        // setMintingStatus("Creating NFT...");
+  
+        // Prepare metadata
+        const metadata = {
+          title: formData.title,
+          description: formData.description,
+          price: formData.price,
+          category: formData.category,
+          location: formData.location,
+          contact_info: formData.contactInfo,
+          file_name: file.name,
+          file_size: file.size,
+          upload_timestamp: new Date().toISOString(),
+        };
+        //   console.log(walletAddress)
+  
+        // Prepare the mint request
+        const request = {
+          owner: walletAddress, // Use the logged-in user's Principal
+          metadata: metadata,
+        };
+  
+        // Call the mint_nft function
+        const nftId = await react_project_backend.mint_nft(request);
+        setMintingStatus(`Successfully created NFT with ID: ${nftId.toString()}`);
+  
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          price: "",
+          category: "",
+          location: "",
+          contactInfo: "",
+        });
+        setFile(null);
+  
+        reader.onload = function (e) {
+          const base64data = reader.result.split(',')[1];  // Get the base64 part after the comma
+          localStorage.setItem(formData.title, base64data); // Store the file in localStorage
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {
+        setError("Failed to create NFT: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
 
   const handleNext = () => {
-    if (activeStep === 0 && !file) {
+    if (activeStep === -1 && !file) {
       setError("Please upload a PDF document first");
       return;
     }
@@ -104,7 +154,7 @@ const PDFUploader = () => {
 
   const getStepContent = (step) => {
     switch (step) {
-      case 0:
+      case -1:
         return (
           <Box sx={{ textAlign: "center", py: 4 }}>
             <Paper
@@ -162,7 +212,7 @@ const PDFUploader = () => {
           </Box>
         );
 
-      case 1:
+      case 0:
         return (
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -190,7 +240,7 @@ const PDFUploader = () => {
           </Grid>
         );
 
-      case 2:
+      case 1:
         return (
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
@@ -237,7 +287,7 @@ const PDFUploader = () => {
           </Grid>
         );
 
-      case 3:
+      case 2:
         return (
           <Grid container spacing={3}>
             <Grid item xs={12}>
