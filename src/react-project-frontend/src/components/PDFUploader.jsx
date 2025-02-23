@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useUser } from "../providers/user";
 import { react_project_backend } from "../../../declarations/react-project-backend";
-import 
-{
+import {
   Box,
   Button,
   TextField,
@@ -16,12 +15,6 @@ import
   Stepper,
   Step,
   StepLabel,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
 } from "@mui/material";
 import {
   UploadFile as UploadFileIcon,
@@ -30,7 +23,6 @@ import {
   NavigateBefore as NavigateBeforeIcon,
   Check as CheckIcon,
 } from "@mui/icons-material";
-
 
 const PDFUploader = () => {
   const [activeStep, setActiveStep] = useState(-1);
@@ -67,10 +59,22 @@ const PDFUploader = () => {
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
     if (uploadedFile) {
-      if (uploadedFile.type !== "application/pdf") {
-        setError("Please upload a PDF file");
+      // Check file type
+      if (!uploadedFile.type || uploadedFile.type !== "application/pdf") {
+        setError("Only PDF files are allowed");
+        setFile(null);
+        event.target.value = ""; // Reset the input
         return;
       }
+
+      // Check file size (10MB limit)
+      if (uploadedFile.size > 10 * 1024 * 1024) {
+        setError("File size must be less than 10MB");
+        setFile(null);
+        event.target.value = ""; // Reset the input
+        return;
+      }
+
       setFile(uploadedFile);
       setError("");
     }
@@ -87,57 +91,50 @@ const PDFUploader = () => {
       return;
     }
     try {
-        setLoading(true);
-        setError("");
-        // setMintingStatus("Creating NFT...");
-  
-        // Prepare metadata
-        const metadata = {
-          title: formData.title,
-          description: formData.description,
-          price: formData.price,
-          category: formData.category,
-          location: formData.location,
-          contact_info: formData.contactInfo,
-          file_name: file.name,
-          file_size: file.size,
-          upload_timestamp: new Date().toISOString(),
-        };
-        //   console.log(walletAddress)
-  
-        // Prepare the mint request
-        const request = {
-          owner: walletAddress, // Use the logged-in user's Principal
-          metadata: metadata,
-        };
-  
-        // Call the mint_nft function
-        const nftId = await react_project_backend.mint_nft(request);
-        setMintingStatus(`Loaded NFT!`);
-  
-        // Reset form
-        setFormData({
-          title: "",
-          description: "",
-          price: "",
-          category: "",
-          location: "",
-          contactInfo: "",
-        });
-        setFile(null);
-  
-        reader.onload = function (e) {
-          const base64data = reader.result.split(',')[1];  // Get the base64 part after the comma
-          localStorage.setItem(formData.title, base64data); // Store the file in localStorage
-        };
-        reader.readAsDataURL(file);
-      } catch (err) {
-        setError("Failed to create NFT: " + err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
+      setLoading(true);
+      setError("");
+
+      const metadata = {
+        title: formData.title,
+        description: formData.description,
+        price: formData.price,
+        category: formData.category,
+        location: formData.location,
+        contact_info: formData.contactInfo,
+        file_name: file.name,
+        file_size: file.size,
+        upload_timestamp: new Date().toISOString(),
+      };
+
+      const request = {
+        owner: walletAddress,
+        metadata: metadata,
+      };
+
+      const nftId = await react_project_backend.mint_nft(request);
+      setMintingStatus("Loaded NFT!");
+
+      setFormData({
+        title: "",
+        description: "",
+        price: "",
+        category: "",
+        location: "",
+        contactInfo: "",
+      });
+      setFile(null);
+
+      reader.onload = function (e) {
+        const base64data = reader.result.split(",")[1];
+        localStorage.setItem(formData.title, base64data);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError("Failed to create NFT: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNext = () => {
     if (activeStep === -1 && !file) {
@@ -182,7 +179,7 @@ const PDFUploader = () => {
               </Typography>
               <Input
                 type="file"
-                accept=".pdf,application/pdf"
+                accept="application/pdf"
                 onChange={handleFileChange}
                 sx={{ mt: 2 }}
                 disableUnderline
@@ -436,14 +433,15 @@ const PDFUploader = () => {
         )}
 
         <Box sx={{ mt: 4, display: "flex", justifyContent: "space-between" }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            startIcon={<NavigateBeforeIcon />}
-          >
-            Back
-          </Button>
-          <Box>
+          {/* Only show back button if not on the first page */}
+          {activeStep > -1 && (
+            <Button onClick={handleBack} startIcon={<NavigateBeforeIcon />}>
+              Back
+            </Button>
+          )}
+
+          {/* If on first page, place the next button on the right */}
+          <Box sx={{ ml: activeStep === -1 ? "auto" : 0 }}>
             {activeStep === steps.length - 1 ? (
               <Button
                 variant="contained"
@@ -462,9 +460,7 @@ const PDFUploader = () => {
                 onClick={handleNext}
                 endIcon={<NavigateNextIcon />}
               >
-                
-                {activeStep == 2 ? "Confirm" : "Next" }
-                {/* Next */}
+                {activeStep === 2 ? "Confirm" : "Next"}
               </Button>
             )}
           </Box>

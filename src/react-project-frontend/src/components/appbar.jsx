@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,16 +9,50 @@ import {
 } from "@mui/material";
 import { useAppBar } from "../providers/navbar";
 import { useNavigate } from "react-router-dom";
-
+import { AuthClient } from "@dfinity/auth-client";
+import { useUser } from "../providers/user";
 const AppBarComponent = () => {
   const { isWalletConnected, connectWallet, disconnectWallet } = useAppBar();
   const navigate = useNavigate();
+  const { walletAddress } = useUser();
+  // Check authentication status on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // const authClient = await AuthClient.create();
+        // const isAuthenticated = await authClient.isAuthenticated();
+        console.log(isWalletConnected);
+        if (walletAddress !== "") {
+          console.log("teast");
+          connectWallet();
+        } else {
+          disconnectWallet();
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+      }
+    };
 
-  const handleLogout = () => {
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
     if (isWalletConnected) {
-      disconnectWallet();
-      navigate("/"); // Redirect to the home page or login page after logout
+      try {
+        const authClient = await AuthClient.create();
+        if (authClient.isAuthenticated()) {
+          await authClient.logout();
+        }
+        disconnectWallet();
+        navigate("/");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     }
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -93,7 +127,7 @@ const AppBarComponent = () => {
           color="inherit"
           variant="outlined"
           sx={{ ml: 2 }}
-          onClick={isWalletConnected ? handleLogout : connectWallet}
+          onClick={isWalletConnected ? handleLogout : handleLogin}
         >
           {isWalletConnected ? "Logout" : "Login"}
         </Button>
