@@ -18,7 +18,26 @@ import { useRefresh } from "../providers/refresh";
 
 const WalletAddressBox = ({ walletAddress }) => {
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(walletAddress);
+    try {
+      // Create temporary textarea
+      const textarea = document.createElement("textarea");
+      textarea.value = walletAddress;
+      // Make the textarea hidden
+      textarea.style.position = "absolute";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      // Select and copy
+      textarea.select();
+      document.execCommand("copy");
+      // Cleanup
+      document.body.removeChild(textarea);
+
+      // Optional: Add some user feedback
+      // You can use your MUI components to show a success message
+      // For example, you could add a state for showing a temporary success message
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
   };
 
   return (
