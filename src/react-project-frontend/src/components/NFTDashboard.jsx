@@ -24,7 +24,14 @@ import { useRefresh } from "../providers/refresh";
 
 // Separate TransferDialog into a memoized component
 const TransferDialog = memo(
-  ({ open, onClose, onTransfer, transferAddress, setTransferAddress }) => {
+  ({
+    open,
+    onClose,
+    onTransfer,
+    transferAddress,
+    setTransferAddress,
+    isTransferring,
+  }) => {
     const handleInputChange = (e) => {
       setTransferAddress(e.target.value);
     };
@@ -42,6 +49,7 @@ const TransferDialog = memo(
           <IconButton
             onClick={onClose}
             sx={{ position: "absolute", right: 8, top: 8 }}
+            disabled={isTransferring}
           >
             <CloseIcon />
           </IconButton>
@@ -55,15 +63,30 @@ const TransferDialog = memo(
             value={transferAddress}
             onChange={handleInputChange}
             autoComplete="off"
+            disabled={isTransferring}
             InputProps={{
               autoFocus: true,
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onTransfer} variant="contained" color="warning">
-            Transfer
+          <Button onClick={onClose} disabled={isTransferring}>
+            Cancel
+          </Button>
+          <Button
+            onClick={onTransfer}
+            variant="contained"
+            color="warning"
+            disabled={isTransferring}
+            startIcon={
+              isTransferring ? (
+                <CircularProgress size={20} />
+              ) : (
+                <TransferWithinAStationIcon />
+              )
+            }
+          >
+            {isTransferring ? "Transferring..." : "Transfer"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -78,6 +101,7 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [transferAddress, setTransferAddress] = useState("");
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [isTransferring, setIsTransferring] = useState(false);
   const { triggerRefresh } = useRefresh();
   const CARDS_PER_ROW = 3;
   const MIN_CARDS = 6;
@@ -126,8 +150,10 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
   };
 
   const handleCloseTransferDialog = () => {
-    setTransferDialogOpen(false);
-    setTransferAddress("");
+    if (!isTransferring) {
+      setTransferDialogOpen(false);
+      setTransferAddress("");
+    }
   };
 
   const handleTransfer = async () => {
@@ -135,6 +161,7 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
       setError("Please enter a transfer address");
       return;
     }
+    setIsTransferring(true);
     try {
       const success = await react_project_backend.transfer_nft(
         selectedNFT.id,
@@ -143,13 +170,15 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
       if (success) {
         setTransferDialogOpen(false);
         setTransferAddress("");
-        fetchNFTs();
+        await fetchNFTs();
         triggerRefresh();
       } else {
         setError("Transfer failed");
       }
     } catch (err) {
       setError("Transfer failed: " + err.message);
+    } finally {
+      setIsTransferring(false);
     }
   };
 
@@ -380,6 +409,7 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
         onTransfer={handleTransfer}
         transferAddress={transferAddress}
         setTransferAddress={setTransferAddress}
+        isTransferring={isTransferring}
       />
     </Box>
   );
