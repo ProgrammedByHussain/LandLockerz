@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../providers/user";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button, Container, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { AuthClient } from "@dfinity/auth-client";
 import { useAppBar } from "../providers/navbar";
+import LandLocks from "/LandLocks.png";
 
 const LoginComponent = () => {
   const { connectWallet } = useAppBar();
@@ -11,6 +19,8 @@ const LoginComponent = () => {
   const navigate = useNavigate();
   const [authClient, setAuthClient] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loginLoading, setLoginLoading] = useState(false);
   const ID = "rdmx6-jaaaa-aaaaa-aaadq-cai";
 
   useEffect(() => {
@@ -27,6 +37,8 @@ const LoginComponent = () => {
         }
       } catch (error) {
         console.error("Auth client initialization error:", error);
+      } finally {
+        setLoading(false);
       }
     };
     initAuthClient();
@@ -34,6 +46,7 @@ const LoginComponent = () => {
 
   const handleLogin = async () => {
     if (authClient) {
+      setLoginLoading(true);
       await authClient.login({
         identityProvider: `https://identity.ic0.app/?canisterId=${ID}`,
         onSuccess: () => {
@@ -48,29 +61,67 @@ const LoginComponent = () => {
           setIsAuthenticated(false);
         },
       });
+      setLoginLoading(false);
     }
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
       <Paper
-        elevation={3}
-        sx={{ padding: 4, marginTop: 8, textAlign: "center" }}
+        elevation={6}
+        sx={{
+          padding: 8,
+          textAlign: "center",
+          borderRadius: 3,
+          width: "100%",
+          maxWidth: 700,
+        }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Login with Internet Identity
+        <img
+          src={LandLocks}
+          alt="LandLocks Logo"
+          style={{ width: "200px", height: "auto", marginBottom: "30px" }}
+        />
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ fontWeight: "bold" }}
+        >
+          Welcome to LandLocks
         </Typography>
-        <Box sx={{ mt: 3 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            onClick={handleLogin}
-          >
-            Login
-          </Button>
-        </Box>
+        <Typography variant="body1" color="textSecondary" gutterBottom>
+          Securely authenticate with Internet Identity to manage your digital
+          land ownership.
+        </Typography>
+        {loading ? (
+          <CircularProgress sx={{ mt: 3 }} />
+        ) : (
+          <Box sx={{ mt: 4 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              onClick={handleLogin}
+              disabled={loginLoading}
+            >
+              {loginLoading ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Login with Internet Identity"
+              )}
+            </Button>
+          </Box>
+        )}
       </Paper>
     </Container>
   );

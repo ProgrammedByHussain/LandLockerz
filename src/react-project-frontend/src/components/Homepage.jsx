@@ -13,6 +13,7 @@ import NFTDashboard from "./NFTDashboard";
 import NFTPriceTotal from "./NFTPriceTotal";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { react_project_backend } from "../../../declarations/react-project-backend";
+import LandLocks from "/LandLocks.png";
 
 const HomePage = () => {
   const { walletAddress } = useUser();
@@ -68,6 +69,16 @@ const HomePage = () => {
           </Fade>
 
           <Divider sx={{ my: 2, borderColor: "rgba(0, 0, 0, 0.1)" }} />
+
+          <Fade in={showPortfolioText} timeout={1500}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+              <img
+                src={LandLocks}
+                alt="LandLocks Logo"
+                style={{ maxWidth: "700px", height: "auto" }}
+              />
+            </Box>
+          </Fade>
         </Grid>
 
         {/* Right Section: NFT Dashboard */}

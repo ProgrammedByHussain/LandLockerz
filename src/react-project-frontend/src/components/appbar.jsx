@@ -7,20 +7,20 @@ import {
   Box,
   Divider,
 } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
 import { useAppBar } from "../providers/navbar";
 import { useNavigate } from "react-router-dom";
 import { AuthClient } from "@dfinity/auth-client";
 import { useUser } from "../providers/user";
+
 const AppBarComponent = () => {
   const { isWalletConnected, connectWallet, disconnectWallet } = useAppBar();
   const navigate = useNavigate();
   const { walletAddress } = useUser();
-  // Check authentication status on component mount
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // const authClient = await AuthClient.create();
-        // const isAuthenticated = await authClient.isAuthenticated();
         console.log(isWalletConnected);
         if (walletAddress !== "") {
           console.log("teast");
@@ -59,14 +59,17 @@ const AppBarComponent = () => {
     <AppBar position="static">
       <Toolbar>
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-          <Typography
-            variant="h6"
-            component="div"
-            onClick={() => navigate("/Home")}
-            sx={{ cursor: "pointer" }}
-          >
-            LandLocks
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              onClick={() => navigate("/Home")}
+              sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+            >
+              LandLocks
+              <LockIcon sx={{ ml: 1, fontSize: "1.2rem" }} />
+            </Typography>
+          </Box>
           <Divider
             orientation="vertical"
             flexItem
