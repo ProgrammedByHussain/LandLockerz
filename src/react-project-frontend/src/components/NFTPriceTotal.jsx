@@ -1,13 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Box, Paper, Typography } from "@mui/material";
+import { useRefresh } from "../providers/refresh";
 
 const NFTPriceTotal = ({ nfts }) => {
-  const totalPrice = useMemo(() => {
-    return nfts.reduce((sum, nft) => {
+  const { refresh } = useRefresh();
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    const newTotalPrice = nfts.reduce((sum, nft) => {
       const priceNum = parseFloat(nft.metadata.price.replace(/[^0-9.-]+/g, ""));
       return isNaN(priceNum) ? sum : sum + priceNum;
     }, 0);
-  }, [nfts]);
+    setTotalPrice(newTotalPrice);
+  }, [nfts, refresh]);
 
   return (
     <Paper

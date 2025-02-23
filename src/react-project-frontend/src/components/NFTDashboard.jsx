@@ -20,6 +20,7 @@ import {
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
 import CloseIcon from "@mui/icons-material/Close";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { useRefresh } from "../providers/refresh";
 
 // Separate TransferDialog into a memoized component
 const TransferDialog = memo(
@@ -77,7 +78,7 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [transferAddress, setTransferAddress] = useState("");
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
-
+  const { triggerRefresh } = useRefresh();
   const CARDS_PER_ROW = 3;
   const MIN_CARDS = 6;
 
@@ -143,6 +144,7 @@ const NFTDashboard = ({ isSearch, walletAddress }) => {
         setTransferDialogOpen(false);
         setTransferAddress("");
         fetchNFTs();
+        triggerRefresh();
       } else {
         setError("Transfer failed");
       }

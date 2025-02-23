@@ -21,6 +21,7 @@ const LoginComponent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const ID = "rdmx6-jaaaa-aaaaa-aaadq-cai";
 
   useEffect(() => {
@@ -41,8 +42,10 @@ const LoginComponent = () => {
         setLoading(false);
       }
     };
-    initAuthClient();
-  }, []);
+    if (imageLoaded) {
+      initAuthClient();
+    }
+  }, [imageLoaded]);
 
   const handleLogin = async () => {
     if (authClient) {
@@ -88,6 +91,7 @@ const LoginComponent = () => {
         <img
           src={LandLocks}
           alt="LandLocks Logo"
+          onLoad={() => setImageLoaded(true)}
           style={{ width: "200px", height: "auto", marginBottom: "30px" }}
         />
         <Typography
