@@ -1,25 +1,29 @@
-# `react-project`
+# 🌍 LandLocks: A Decentralized Solution for Secure Land Ownership
 
-Welcome to your new `react-project` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+LandLocks is a blockchain-powered platform that transforms property ownership into NFTs, making land records **permanent, verifiable, and easily transferable** without reliance on centralized registries.
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+## 🔍 How It Works
 
-To learn more before you start working with `react-project`, see the following documentation available online:
+LandLocks leverages **Internet Computer (ICP) canisters** to store property NFTs **on-chain**, allowing users to **mint, search, and transfer ownership** seamlessly. The platform features:
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Rust Canister Development Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [ic-cdk](https://docs.rs/ic-cdk)
-- [ic-cdk-macros](https://docs.rs/ic-cdk-macros)
-- [Candid Introduction](https://internetcomputer.org/docs/current/developer-docs/backend/candid/)
+✅ **A React-based dashboard** for intuitive property management.  
+✅ **Public NFT lookup**, enabling users to query any wallet for land holdings.  
+✅ **Tamper-proof records** stored fully on the ICP blockchain.  
+✅ **Fast, low-cost transactions** without traditional gas fees.
 
-If you want to start working on your project right away, you might want to try the following commands:
+## 🚀 Why It Matters
 
-```bash
-cd react-project/
-dfx help
-dfx canister --help
-```
+Many regions still rely on **paper-based land titles**, leading to **disputes and fraud**. By using **blockchain technology**, LandLocks ensures **ownership is transparent, permanent, and globally accessible**.
+
+## 💻 Tech Stack
+
+- **Backend:** Rust (ICP Canisters)
+- **Frontend:** React
+- **Blockchain:** Internet Computer (ICP), Web3
+
+## 🎥 Demo
+
+[Watch the Demo on YouTube](#) _(https://www.youtube.com/watch?v=0Kc4P3s-sdk)_
 
 ## Running the project locally
 
